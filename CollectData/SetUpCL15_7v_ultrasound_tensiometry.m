@@ -72,14 +72,22 @@ tapSamples = 75; % Samples after a tap event
 sampleRate = 20000; % Hz (within ultrasound frames for a tap)
 %% You should not have to modify past here, unless adapting the code for a different system.
 
+% Add an error check for current working folder.
+if ~contains(pwd,'Vantage')
+    error('Make sure the current working directory is the Vantage folder.')
+end
+
 simulateMode = 0;   % set to 0 to acquire data using Vantage 64LE hardware, 1 for simulation mode
 
 % for saving:
 CollectionParams.slowFrameRate = tapRate;
 CollectionParams.fastFrameRate = sampleRate;
 
+
 % --- Initiate time tags ----------------------------------
-TimeTagEna = 0; % initial state of time tag function
+TimeTagEna = 0; % initial state of time tag function% LW: I suspect this is obsolete - test to make sure
+
+% initiate the start of a trial
 flag_tap = 0; % no taps completed; changes to 1 once it has tapped
 
 %% ------- Specify Trans structure array ---------------------------------
@@ -309,7 +317,7 @@ Process(2).Parameters = {'srcbuffer','receive',... % name of buffer to process.
                          'dstbuffer','none'};
 
 
-% EF2 is external function for tap check
+% EF3 is external function for tap check
 Process(3).classname = 'External';
 Process(3).method = 'tapCheckFunction';
 Process(3).Parameters = {'srcbuffer','inter',... % name of buffer to process.
