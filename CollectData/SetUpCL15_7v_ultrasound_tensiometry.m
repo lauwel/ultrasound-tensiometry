@@ -121,8 +121,8 @@ PData(1).Size(2) = ceil((Trans.numelements*Trans.spacing)/PData(1).PDelta(1));
 PData(1).Size(3) = 1;      % single image page
 PData(1).Origin = [-Trans.spacing*(Trans.numelements-1)/2,0,P.startDepth]; % x,y,z of upper lft crnr.
 % No PData.Region specified, so a default Region for the entire PData array will be created by computeRegions.
-if PData(1).Size(1) > 200
-    error('You may be requesting a VERY large matrix because of the resolution requested. Verify that these values are correct.')
+if PData(1).Size(1) * tapSamples * tapRate * numTaps*10^-6 > 150 %
+    error('You may be requesting a VERY large matrix because of the resolution and/or number of taps requested. Verify that these values are correct.')
 end
 % Specify Media object. 'pt1.m' script defines array of point targets.
 pt1;
