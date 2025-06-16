@@ -64,7 +64,7 @@ endDepthMM = 14;% mm
 resDesiredMM = 0.1; % mm of desired image resolution (between 0.05 and 1 mm) 
 
 % between taps
-numTaps = 100; % total number of taps, must be even
+numTaps = 100; % total number of taps
 tapRate = 50; % Hz (between taps)
 
 % within taps
@@ -89,7 +89,11 @@ TimeTagEna = 0; % initial state of time tag function% LW: I suspect this is obso
 
 % initiate the start of a trial
 flag_tap = 0; % no taps completed; changes to 1 once it has tapped
-
+if rem(numTaps,2)~=0
+    rcvBufferFrameSize = numTaps+1;
+else
+    rcvBufferFrameSize = numTaps;
+end
 %% ------- Specify Trans structure array ---------------------------------
 Trans.name = 'CL15-7','035C';
 Trans.units = 'wavelengths'; % Explicit declaration avoids warning message when selected by default
@@ -135,7 +139,7 @@ tframe=zeros(100000,1);
 Resource.RcvBuffer(1).datatype = 'int16';
 Resource.RcvBuffer(1).rowsPerFrame = 1280*tapSamples;   % 4096 - this size allows for maximum range
 Resource.RcvBuffer(1).colsPerFrame = Resource.Parameters.numRcvChannels;
-Resource.RcvBuffer(1).numFrames = numTaps;       % number of 'taps'
+Resource.RcvBuffer(1).numFrames = rcvBufferFrameSize;       % number of 'taps'
 
 Resource.RcvBuffer(2).datatype = 'int16';% add a second buffer for non collection
 Resource.RcvBuffer(2).rowsPerFrame = 1280*tapSamples;   % 4096 - this size allows for maximum range
