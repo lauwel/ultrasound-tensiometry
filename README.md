@@ -6,8 +6,8 @@ This GitHub repository contains the MATLAB code that enables users to capture **
 Ultrasound-tensiometry is used to assess the spatial variation in shear wave speed in response to a mechanical tap.
 This repository contains two main sections:
 
-* `Collection/`
-* `Processing/`
+* `CollectData/`
+* `ProcessData/`
 
 ## Table of Contents
 
@@ -21,7 +21,7 @@ This repository contains two main sections:
 
 ## Installation
 
-Clone the repository directly into the `Vantage` folder on the Verasonics computer to enable data collection.
+Clone the repository directly into the `Vantage #.#.#` folder on the Verasonics computer to enable data collection.
 The processing code **does not** rely on Verasonics functions and can be run on any other computer.
 
 ---
@@ -55,11 +55,16 @@ To generate the mechanical tap:
 
 ## Collecting Ultrasound-Tensiometry Data
 
+This code is originally based on `RunSetUpL11_5vFlashHFR_acquire.m`, the **"High Frame Rate" acquisition** code for ultrafast imaging with a Vantage 64LE system, written for **Vantage 4.4.0**. It has been modified by **Darryl Thelen** and **Lauren Welte**.
+
 1. On the Verasonics computer, make sure the system is powered on.
 2. Open `SetUpCL15_7v_ultrasound_tensiometry.m` in MATLAB.
-3. Ensure the **working directory is the `Vantage` folder**.
+3. Ensure the **working directory is the `Vantage #.#.#` folder**.
+4. Update the [parameters](#-Parameters-to-Update) as desired
+5. Click **Run** and it will create the set up file and run VSX automatically. 
 
 ### Parameters to Update
+#### Imaging Parameters
 
 Update parameters in the first section of the script based on:
 
@@ -67,18 +72,64 @@ Update parameters in the first section of the script based on:
 * Start and end depth (in mm)
 * Desired resolution (in mm)
 
-> *Limit depth to avoid excessive memory use:*
+> *Limit the number of pixels of depth to avoid excessive memory use:*
 > The number of depth pixels is calculated as:
 > `(endDepthMM - startDepthMM) / resDesiredMM`
 > If this exceeds **200 pixels**, MATLAB will likely crash due to oversized data structures.
 
-### Taps and Capture Rate
+#### Taps and Capture Rate
 
-* Set `numTaps` (must be an **even** number).
-* Tap rate can be adjusted, but exceeding the allowable rate will cause **timeout errors** from Verasonics.
+* Set the number of desired tap events in `numTaps`.
+* Tap rate (frequency of tapping) can be adjusted, but exceeding the allowable rate will cause **timeout errors** from Verasonics.
 
 > Tip: Lower data volume per tap → higher allowable tap rate.
 > Unfortunately, finding the ideal rate is currently trial-and-error.
+
+---
+
+### Sequence Overview
+---
+
+* The `Event` structure controls the sequence of imaging events.
+* Two primary modes:
+
+  1. **Initial Plane Wave Imaging** for probe placement and image guidance (loops until `Start` is pressed).
+  2. **Tensiometry Mode**, triggered after pressing `Start`, where:
+
+     * A **trigger out** signal initiates an external mechanical tap.
+     * The system captures `tapSamples` of plane wave data at the defined `sampleRate` (recommend 20,000 Hz).
+     * This repeats for `numTaps`, using the specified `tapRate`.
+
+>  MATLAB may **freeze** during data acquisition due to large data throughput. This is expected behaviour.
+
+### After Acquisition
+
+* The system prompts the user to save the data.
+* Saving can take **several minutes** depending on depth and resolution.
+* The data are stored in a `.mat` file, which includes:
+
+  * `RF`: first frame from each tap (for reconstruction)
+  * `IQ`: full imaging data
+  * Parameters: `TX`, `TW`, `Trans`, `P`, `PData`, `CollectionParams`, `Resource`, `Receive`, `SeqControl`
+
+---
+
+### Tap Check
+
+Use the **Tap Check GUI** to check the data quality by clicking `Tap Check`:
+
+1. Select number of taps to review (e.g., 10 out of 20 will show taps 1, 3, 5...19).
+2. Click `Select ROI`, and draw a region from superficial to deep on the ultrasound image.
+3. Click `Calculate` to analyze wave propagation.
+4. Navigate using:
+
+   * **Arrow keys** (←/→): switch between taps
+   * **Arrow keys** (↑/↓): switch between depths
+   * Or use the on-screen buttons
+   > If the arrow keys are not working, click in the background of the GUI, away from any axes or element and try again. 
+
+This provides a quick qualitative assessment of wave propagation before full processing.
+
 
 ---
 
