@@ -62,7 +62,7 @@ This code is originally based on `RunSetUpL11_5vFlashHFR_acquire.m`, the **"High
 3. Ensure the **working directory is the `Vantage #.#.#` folder**.
 4. Update the [parameters](#-Parameters-to-Update) as desired
 5. Click **Run** and it will create the set up file and run VSX automatically. 
-
+---
 ### Parameters to Update
 #### Imaging Parameters
 
@@ -88,7 +88,7 @@ Update parameters in the first section of the script based on:
 ---
 
 ### Sequence Overview
----
+
 
 * The `Event` structure controls the sequence of imaging events.
 * Two primary modes:
@@ -101,7 +101,7 @@ Update parameters in the first section of the script based on:
      * This repeats for `numTaps`, using the specified `tapRate`.
 
 >  MATLAB may **freeze** during data acquisition due to large data throughput. This is expected behaviour.
-
+---
 ### After Acquisition
 
 * The system prompts the user to save the data.
@@ -113,7 +113,6 @@ Update parameters in the first section of the script based on:
   * Parameters: `TX`, `TW`, `Trans`, `P`, `PData`, `CollectionParams`, `Resource`, `Receive`, `SeqControl`
 
 ---
-
 ### Tap Check
 
 Use the **Tap Check GUI** to check the data quality by clicking `Tap Check`:
@@ -139,3 +138,20 @@ This provides a quick qualitative assessment of wave propagation before full pro
 * This version has only been tested with **MATLAB R2022a**.
 * **Large files:** Ensure sufficient **RAM** and **disk space**—ultrasound-tensiometry data is heavy.
 
+1. Start by opening `CalculateDisplacement` by typing in the command window.
+2. Select the folder with your tensiometry files.
+3. Click or CTRL + Click the files you want to process.
+4. Choose parameters for the Loupas algorithm under the "Calculate Displacement" checkbox. Generally you won't need to change these.
+5. To calculate the displacement peaks along the depth lines, choose "Radon Transform". It is much more stable. 
+6. Choose the number of taps to process. It will automatically choose "All Taps". If you want less, uncheck the box and fill in the text boxes with the desired tap range.
+7. If you want a region of interest (i.e. select only an area of the image for processing), check "Select ROI". This will pop up with an image for you to select a region.
+8. If you have the parallel computing toolbox installed, you will have the option to use it. It is generally much faster to use the PCT.
+9. Click calculate. For the options selected, it will save out a `filename_displacement.mat` and a `filename_radon.mat` file. 
+    * The displacement file contains two matrices, one with the raw displacement and one with filtered displacement with the indices: (depth, width, withintapImages,tapNumber).
+    * The radon file contains  :
+        * `SWS` which is a cell array with SWS{tap number}, and each one contains the shear wave speed at each depth pixel in the region of interest (or the entire image if selected).
+        * `Rsq` this is a measure of the sum of the Radon transform. It gives a sense of how reliable the wave speed measure is. This can be adjusted in the visualization GUI to omit low confidence values
+        * `method` will give "Radon Transform" as a string.
+        * `ROI_dx`, `ROI_wx` give the values in mm of the region of interest pixels in depth (dx) and width (along transducer) (wx)
+
+If you want to visualise the data, open `visualiseHFR_Radon` by typing it into the command window. Click `File` in the menu bar and `Load`. Choose the ORIGINAL file. It will automatically look for the _displacement and _radon files. 
