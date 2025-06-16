@@ -1,11 +1,11 @@
 Ultrasound-tensiometry
 
-This GitHub repository contains the MATLAB code that enables users to capture ultrasound-tensiometry data (see pre-print here: ____________). The goal of ultrasound-tensiometry is to assess the spatial variation in shear wave speed in response to a mechanical tap. This repository contains two sections: "Collection" and "Processing".
+This GitHub repository contains the MATLAB code that enables users to capture ultrasound-tensiometry data (see manuscript: https://doi.org/10.1016/j.gaitpost.2024.06.026). The goal of ultrasound-tensiometry is to assess the spatial variation in shear wave speed in response to a mechanical tap. This repository contains two sections: "Collection" and "Processing".
 
-Clone the respository directly into the Vantage ### folder on the Verasonics computer to collect data. The processing code does NOT require any of the Verasonics functions, and can be cloned onto any other computer. 
+Clone the repository directly into the Vantage ### folder on the Verasonics computer to collect data. The processing code does NOT require any of the Verasonics functions, and can be cloned onto any other computer. 
 
 ---REQUIRED HARDWARE ----
-This system is designed to function with a Verasonics Vantage 64LE Ultrasound system and a Phillips CL15-7 ultrasound probe. Other probes and Vantage implementations (128, 256 etc) may be implented in the future. 
+This system is designed to function with a Verasonics Vantage 64LE Ultrasound system and a Phillips CL15-7 ultrasound probe. Other probes and Vantage implementations (128, 256, etc) may be implemented in the future. We are actively working on a 128 implementation.
 
 To induce the tap, the Vantage system outputs an external trigger signal, which drives a function generator to produce an impulsive tap, driving a mechanical piston attached to a surface transducer (voice coil). When placed superficially to the tissue of interest, the wave is induced in the tissue and then measured using the ultrasound probe.
 
